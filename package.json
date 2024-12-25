@@ -10,6 +10,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.21.2"
+    "@hapi/joi": "^15.0.3",
+    "express": "^4.21.2",
+    "joi": "^17.13.3"
   }
 }
