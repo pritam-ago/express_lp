@@ -28,10 +28,8 @@ app.get('/api/courses/:id', (req, res)=>{
 });
 
 app.post('/api/courses', (req, res) => {
-    const schema = Joi.object({
-        name : Joi.string().min(3).required()
-    });
-    const result = schema.validate(req.body);
+    
+    const { error } = validateCourse(req.body);
     if(result.error){
         res.status(400).send(result.error.details[0].message);
     }else{
@@ -41,10 +39,31 @@ app.post('/api/courses', (req, res) => {
     }
     courses.push(newCourse);
     res.send(newCourse);
-    }
-    
-})
+    } 
+});
 
+app.put('/api/courses/:id', (req, res) =>{
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if(!course) res.status(404).send('There is no course available with that ID');
+
+    const { error } = validateCourse(req.body);
+    if(result.error){
+        res.status(400).send(result.error.details[0].message);
+    }
+    else{
+        course.name = req.body.name;
+        res.send(course);
+    }
+
+});
+
+function validateCourse(course){
+    const schema = Joi.object({
+        name : Joi.string().min(3).required()
+    });
+
+    return schema.validate(course);
+}
 
 const port = process.env.PORT || 3000;
 app.listen(port, ()=>{console.log(`This mf is running on port: ${port}`)});
