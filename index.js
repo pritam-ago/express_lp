@@ -24,14 +24,14 @@ app.get('/api/courses', (req, res) =>{
 app.get('/api/courses/:id', (req, res)=>{
     const course = courses.find(c => c.id === parseInt(req.params.id));
     if(!course) res.status(404).send('There is no course available with that ID');
-    res.send(course)
+    res.send(course);
 });
 
 app.post('/api/courses', (req, res) => {
     
     const { error } = validateCourse(req.body);
-    if(result.error){
-        res.status(400).send(result.error.details[0].message);
+    if(error){
+        res.status(400).send(error.details[0].message);
     }else{
         const newCourse = {
         id : courses.length +1,
@@ -47,14 +47,24 @@ app.put('/api/courses/:id', (req, res) =>{
     if(!course) res.status(404).send('There is no course available with that ID');
 
     const { error } = validateCourse(req.body);
-    if(result.error){
-        res.status(400).send(result.error.details[0].message);
+    if(error){
+        res.status(400).send(error.details[0].message);
     }
     else{
         course.name = req.body.name;
         res.send(course);
     }
 
+});
+
+app.delete('/api/courses/:id', (req,res) =>{
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if(!course) res.status(404).send('There is no course available with that ID');
+
+    const index = courses.indexOf(course);
+    courses.splice(index, 1);
+
+    res.send(course);
 });
 
 function validateCourse(course){
